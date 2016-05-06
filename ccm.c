@@ -148,6 +148,29 @@ int main(int argc, char *argv[]) {
     time(&start_time);
   }
 
+
+  // make sure the required arguments are set and appropriate
+  if (!infilename) {
+    fprintf(stderr,"Please provide an expression matrix filename.\n");
+    exit(-1);
+  }
+  // make sure we have a positive integer for the rows and columns of the matrix
+  if (rows < 0 || rows == 0) {
+    fprintf(stderr, "Please provide a positive integer value for the number of rows in the \n");
+    fprintf(stderr, "expression matrix.\n");
+    exit(-1);
+  }
+  if (cols < 0 || cols == 0) {
+    fprintf(stderr, "Please provide a positive integer value for the number of columns in\n");
+    fprintf(stderr, "the expression matrix.\n");
+    exit(-1);
+  }
+  // make sure the input file exists
+  if (access(infilename, F_OK) == -1) {
+    fprintf(stderr,"The input file does not exists or is not readable.\n");
+    exit(-1);
+  }
+
   // remove the path and extension from the filename
   strcpy(fileprefix, basename(infilename));
   char *p = rindex(fileprefix, '.');

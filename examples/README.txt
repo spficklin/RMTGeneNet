@@ -30,8 +30,7 @@ The first step in construction of the yeast global network is to construct
 the correlation matrix.  The following commands can be executed to construct
 this matrix:
 
-  mkdir Pearson
-  ccm yeast-s_cerevisiae1.global.RMA.nc-no-na-nh 10359 1535
+  ../ccm yeast-s_cerevisiae1.global.RMA.nc-no-na-nh.txt 10359 1535
 
 The number of probesets and samples in the file are passed to 'ccm'.
 
