@@ -51,8 +51,9 @@ safe to start at this threshold.
 
 Step 3: Generate additional network files
 -----------------------------------------
-The threshold returned from Step 2 was 0.831100. We can now use that
-threshold to generate the final network file
+The threshold returned from Step 2 was 0.831100. The threshold can be found in
+the file named: yeast-s_cerevisiae1.global.RMA.nc-no-na-nh.th.txt.  
+We can now use that threshold to generate the final network file
 
   perl ../parse_pearson_bin.pl -b Pearson -t 0.831100 -p probest_order.txt -o yeast-s_cerevisiae1.global
 
