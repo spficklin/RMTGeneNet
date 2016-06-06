@@ -218,7 +218,7 @@ int determinePearsonCorrelationThreshold_LargeMatrix() {
   FILE* eigenF, *chiF;
 
   // open the output files
-  // eigenF = fileOpenHelper(".eigens.txt");
+  //eigenF = fileOpenHelper(".eigens.txt");
   chiF = fileOpenHelper(".chiVals.txt");
   fprintf(chiF, "Threshold\tChi-square\tCut Matrix Size\n");  
 
@@ -258,11 +258,11 @@ int determinePearsonCorrelationThreshold_LargeMatrix() {
 //        fprintf(timing,"Minutes calculating Eigens: %f\n", (end-start)/60.0);
 //      }
       /* print out eigenvalues to file */
-      // fprintf(eigenF, "%f\t", th);
-      // for(i=0 ; i<size ; i++){
-        // fprintf(eigenF, "%f\t", E[i]);
-      // }
-      // fprintf(eigenF,"\n");
+       //fprintf(eigenF, "%f\t", th);
+       //for(i=0 ; i<size ; i++){
+       //  fprintf(eigenF, "%f\t", E[i]);
+       //}
+       //fprintf(eigenF,"\n");
 //      time(&start);
       printf("  testing similarity of NNSD with Poisson...\n");
       chi = chiSquareTestUnfoldingNNSDWithPoisson(E, size, rmtParameter.nnsdHistogramBin, rmtParameter.minUnfoldingPace, rmtParameter.maxUnfoldingPace);
@@ -320,11 +320,11 @@ int determinePearsonCorrelationThreshold_LargeMatrix() {
 //        }
         free(newM);
         /* print out eigenvalues to file */
-        // fprintf(eigenF, "%f\t", th);
-        // for(i=0 ; i<size ; i++){
-          // fprintf(eigenF, "%f\t", E[i]);
-        // }
-        // fprintf(eigenF,"\n");
+         //fprintf(eigenF, "%f\t", th);
+         //for(i=0 ; i<size ; i++){
+         //  fprintf(eigenF, "%f\t", E[i]);
+         //}
+         //fprintf(eigenF,"\n");
 //        time(&start);
         chi = chiSquareTestUnfoldingNNSDWithPoisson(E, size, rmtParameter.nnsdHistogramBin, rmtParameter.minUnfoldingPace, rmtParameter.maxUnfoldingPace);
 //        time(&end);
@@ -350,7 +350,7 @@ int determinePearsonCorrelationThreshold_LargeMatrix() {
 
   //close the chi and eigen files now that results are written
   fclose(chiF);
-  // fclose(eigenF);
+  //fclose(eigenF);
   /*
   Set the Properties file according to success or failure
   */
@@ -481,7 +481,7 @@ float * readPearsonCorrelationMatrix(float th, int * size) {
   // ------------------------------
   // Step #2: Now build the cut matrix by retreiving the correlation values
   // for each of the genes identified previously
-  for(h = 0; h < z; h++){
+  for(h = 0; h <= z; h++){
     memset(filename,'\0', len );
     strcat(filename, inputDir);
     strcat(filename, inputFileName);
