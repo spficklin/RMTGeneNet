@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 
   // make sure we have between 4 and 5 incoming arguments
   if(argc < 4 || argc > 11) {
-    printf("Usage: ./ccm <ematrix> <rows> <cols> [<omit_na> <na_val> <hist> <perf> <headers>]\n");
+    printf("Usage: ./ccm <ematrix> <rows> <cols> [<omit_na> <na_val> <min_obs> <func> <hist> <perf> <headers>]\n");
     printf("  <ematrix>: the file name that contains the expression matrix. The rows must be genes or probesets and columns are samples\n");
     printf("  <rows>:    the number of lines in the input file minus the header column if it exists\n");
     printf("  <cols>:    the number of columns in the input file minus the first column that contains gene names\n");
