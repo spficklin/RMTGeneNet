@@ -22,20 +22,13 @@ class ThresholdMethod {
     // The directory where the expression matrix is found
     char * bin_dir;
     // Specifies the correlation method that was used: pc, mi, sc
-    char ** method;
-    // Indicates the number of methods.
-    int num_methods;
-    // The method (e.g. sc, mi, pc) to use for thersholding
-    char * th_method;
-    // The index of the th_method in the methods array
-    int th_method_index;
+    char * cmethod;
 
     float ** parseScores(char * scores_str);
 
 
   public:
-    ThresholdMethod(EMatrix *ematrix, char ** method, int num_methods,
-        char * th_method);
+    ThresholdMethod(EMatrix *ematrix, char * cmethod);
     ~ThresholdMethod();
 
 

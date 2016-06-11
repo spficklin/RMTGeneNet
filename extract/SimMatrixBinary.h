@@ -26,7 +26,7 @@ class SimMatrixBinary : public SimilarityMatrix {
 
   public:
     // Constructur.
-    SimMatrixBinary(EMatrix *ematrix, int quiet, char ** method, int num_methods, char * th_method,
+    SimMatrixBinary(EMatrix *ematrix, int quiet, char * c_method,
         int x_coord, int y_cood, char * gene1, char * gene2, float th);
     // Destructor.
     ~SimMatrixBinary();

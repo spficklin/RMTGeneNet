@@ -9,14 +9,9 @@ void RunThreshold::printUsage() {
   printf("The list of required options:\n");
   printf("  --ematrix|-e     The file name that contains the expression matrix.\n");
   printf("                   The rows must be genes or probe sets and columns are samples\n");
-  printf("  --method|-m      The correlation methods used. Supported methods include\n");
+  printf("  --method|-m      The correlation method used. Supported methods include\n");
   printf("                   Pearson's correlation ('pc'), Spearman's rank ('sc')\n");
-  printf("                   and Mutual Information ('mi'). Provide the methods that\n");
-  printf("                   were used in the 'similarity' step.  The methods must appear\n");
-  printf("                   in the same order.\n");
-  printf("  --th_method|-t   The method to be used for thresholding.  Only one method can\n");
-  printf("                   be used for thresholding even if multiple methods are provided\n");
-  printf("                   for the --method argument.\n");
+  printf("                   and Mutual Information ('mi').\n");
   printf("  --rows|-r        The number of lines in the input file including the header\n");
   printf("                   column if it exists\n");
   printf("  --cols|-c        The number of columns in the input file minus the first\n");
@@ -57,13 +52,6 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
   thresholdStep  = 0.001;
   chiSoughtValue = 200;
 
-  // Initialize the array of method names. We set it to 10 as max. We'll
-  // most likely never have this many of similarity methods available.
-  method = (char **) malloc(sizeof(char *) * 10);
-
-  // The concatenated method.
-  char * cmethod;
-
   // The value returned by getopt_long.
   int c;
 
@@ -77,7 +65,6 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
     static struct option long_options[] = {
       {"help",         no_argument,       0,  'h' },
       {"method",       required_argument, 0,  'm' },
-      {"th_method",    required_argument, 0,  'p' },
       {"missing",      required_argument, 0,  'g' },
       {"size",         required_argument, 0,  'z' },
       // Expression matrix options.
@@ -112,9 +99,6 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
         break;
       case 'm':
         cmethod = optarg;
-        break;
-      case 'p':
-        th_method = optarg;
         break;
       // RMT threshold options.
       case 't':
@@ -164,7 +148,6 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
     fprintf(stderr,"Please provide the method (--method option).\n");
     exit(-1);
   }
-  parseMethods(cmethod);
 
   // Make sure we have a positive integer for the rows and columns of the matrix.
   if (rows < 0 || rows == 0) {
@@ -189,10 +172,6 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
     exit(-1);
   }
 
-  if (!th_method) {
-    fprintf(stderr,"Please provide the method to use for thresholding (e.g. pc, sc, or mi) (--th_method option).\n");
-    exit(-1);
-  }
 
   // TODO: make sure the th_method is in the method array.
 
@@ -203,10 +182,7 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
   if (omit_na) {
     printf("  Missing values are: '%s'\n", na_val);
   }
-  for(int i = 0; i < this->num_methods; i++) {
-    printf("  Expecting similarity methods: '%s'\n", method[i]);
-  }
-  printf("  Method for thresholding: %s\n", th_method);
+  printf("  Correlation Method: %s\n", cmethod);
   printf("  Start threshold: %f\n", thresholdStart);
   printf("  Stopping Chi-square %f\n", chiSoughtValue);
   printf("  Step per iteration: %f\n", thresholdStep);
@@ -215,45 +191,6 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
   printf("  Reading expression matrix...\n");
   ematrix = new EMatrix(infilename, rows, cols, headers, omit_na, na_val, func);
 
-}
-/**
- *
- */
-void RunThreshold::parseMethods(char * methods_str) {
-  // Split the method into as many parts
-  char * tmp;
-  int i = 0;
-  tmp = strstr(methods_str, ",");
-  while (tmp) {
-    // Get the method and make sure it's valid.
-    method[i] = (char *) malloc(sizeof(char) * (tmp - methods_str + 1));
-    strncpy(method[i], methods_str, (tmp - methods_str));
-    methods_str = tmp + 1;
-    tmp = strstr(methods_str, ",");
-    i++;
-  }
-  // Get the last element of the methods_str.
-  method[i] = (char *) malloc(sizeof(char) * strlen(methods_str) + 1);
-  strcpy(method[i], methods_str);
-  i++;
-
-  this->num_methods = i;
-
-  for (i = 0; i < this->num_methods; i++) {
-    if (strcmp(method[i], "pc") != 0 &&
-        strcmp(method[i], "mi") != 0 &&
-        strcmp(method[i], "sc") != 0 ) {
-      fprintf(stderr,"Error: The method (--method option) must contain only 'pc', 'sc' or 'mi'.\n");
-      exit(-1);
-    }
-    // Make sure the method isn't specified more than once.
-    for (int j = 0; j < i; j++) {
-      if (strcmp(method[i], method[j]) == 0) {
-        fprintf(stderr,"Error: You may only specify a similarity method once (--method option).\n");
-        exit(-1);
-      }
-    }
-  }
 }
 /**
  *
@@ -268,7 +205,7 @@ RunThreshold::~RunThreshold() {
 void RunThreshold::execute() {
 
   // Find the RMT threshold.
-  RMTThreshold * rmt = new RMTThreshold(ematrix, method, num_methods, th_method, thresholdStart,
+  RMTThreshold * rmt = new RMTThreshold(ematrix, cmethod, thresholdStart,
       thresholdStep, chiSoughtValue);
   rmt->findThreshold();
   printf("Done.\n");

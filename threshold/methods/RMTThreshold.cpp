@@ -1,8 +1,8 @@
 #include "RMTThreshold.h"
 
-RMTThreshold::RMTThreshold(EMatrix * ematrix, char ** method, int num_methods,
-    char * th_method, double thresholdStart, double thresholdStep, double chiSoughtValue)
-  : ThresholdMethod(ematrix, method, num_methods, th_method) {
+RMTThreshold::RMTThreshold(EMatrix * ematrix,
+    char * cmethod, double thresholdStart, double thresholdStep, double chiSoughtValue)
+  : ThresholdMethod(ematrix, cmethod) {
 
   this->thresholdStart = thresholdStart;
   this->thresholdStep  = thresholdStep;
@@ -62,8 +62,8 @@ double RMTThreshold::findThreshold() {
 
 
   // Open the output files and print the headers.
-  sprintf(chi_filename, "%s.%s.chiVals.txt", file_prefix, th_method);
-  sprintf(eigen_filename, "%s.%s.eigenVals.txt", file_prefix, th_method);
+  sprintf(chi_filename, "%s.%s.chiVals.txt", file_prefix, cmethod);
+  sprintf(eigen_filename, "%s.%s.eigenVals.txt", file_prefix, cmethod);
 
 
   chiF = fopen(chi_filename, "w");
@@ -175,7 +175,7 @@ double RMTThreshold::findThreshold() {
     finalTH = ceil(finalTH * 10000) / 10000.0;
     FILE* th;
     char filename[1024];
-    sprintf(filename, "%s.%s.th.txt", file_prefix, th_method);
+    sprintf(filename, "%s.%s.th.txt", file_prefix, cmethod);
     th = fopen(filename, "w");
     fprintf(th, "%f", finalTH);
     fclose(th);
@@ -222,7 +222,7 @@ float * RMTThreshold::read_similarity_matrix_bin_file(float th, int * size) {
   // open the file and get the number of genes and the lines per file
   // these data are the first two integers in the file
   FILE* info;
-  sprintf(filename, "%s/%s.%s%d.bin", bin_dir, ematrix->getFilePrefix(), th_method, 0);
+  sprintf(filename, "%s/%s.%s%d.bin", bin_dir, ematrix->getFilePrefix(), cmethod, 0);
   // TODO: check that file exists before trying to open
   info = fopen(filename, "rb");
   fread(&file_num_genes, sizeof(int), 1, info);
@@ -256,7 +256,7 @@ float * RMTThreshold::read_similarity_matrix_bin_file(float th, int * size) {
   z = (file_num_genes - 1) / file_num_lines;
   for (i = 0; i <= z; i++) {
 
-    sprintf(filename, "%s/%s.%s%d.bin", bin_dir, ematrix->getFilePrefix(), th_method, i);
+    sprintf(filename, "%s/%s.%s%d.bin", bin_dir, ematrix->getFilePrefix(), cmethod, i);
     in = fopen(filename, "rb");
     fread(&junk, sizeof(int), 1, in); // file_num_genes
     fread(&junk, sizeof(int), 1, in); // file_num_lines
@@ -313,7 +313,7 @@ float * RMTThreshold::read_similarity_matrix_bin_file(float th, int * size) {
   // for each of the genes identified previously.
   for (i = 0; i <= z; i++) {
 
-    sprintf(filename, "%s/%s.%s%d.bin", bin_dir, ematrix->getFilePrefix(), th_method, i);
+    sprintf(filename, "%s/%s.%s%d.bin", bin_dir, ematrix->getFilePrefix(), cmethod, i);
     in = fopen(filename, "rb");
     fread(&junk, sizeof(int), 1, in); // file_num_genes
     fread(&junk, sizeof(int), 1, in); // file_num_lines
@@ -562,7 +562,7 @@ double RMTThreshold::getNNSDChiSquare(float* eigens, int size) {
     // Make sure our vector of eigenvalues is still large enough after
     // duplicates have been removed. If not, return a -1.
     if (newSize < minEigenVectorSize) {
-      printf("    Chi-square test failed: eigenvalue array too small after duplicate removal. See the eigenvector output file.\n");
+      //printf("    Chi-square test failed: eigenvalue array too small after duplicate removal. See the eigenvector output file.\n");
       continue;
     }
 

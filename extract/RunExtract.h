@@ -9,13 +9,8 @@ class RunExtract {
   private:
     // The expression matrix object.
     EMatrix * ematrix;
-    // Specifies the method: sc, pc, mi.
-    // Specifies the correlation method that was used: pc, mi, sc
-    char ** method;
-    // Indicates the number of methods.
-    int num_methods;
     // The method used for thresholding.
-    char * th_method;
+    char * cmethod;
     int quiet;
 
     // Common Filters

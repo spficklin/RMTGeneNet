@@ -15,12 +15,7 @@ void RunExtract::printUsage() {
   printf("  --th|-t          The threshold to cut the similarity matrix. Network files will be generated.\n");
   printf("  --method|-m      The correlation methods used. Supported methods include\n");
   printf("                   Pearson's correlation ('pc'), Spearman's rank ('sc')\n");
-  printf("                   and Mutual Information ('mi'). Provide the methods that\n");
-  printf("                   were used in the 'similarity' step.  The methods must appear\n");
-  printf("                   in the same order.");
-  printf("  --th_method|-t   The method used for thresholding.  Only one method uses used\n");
-  printf("                   for thresholding even if multiple methods are provided\n");
-  printf("                   for the --method argument.\n");
+  printf("                   and Mutual Information ('mi').");
   printf("\n");
   printf("Optional expression matrix arguments:\n");
   printf("  --omit_na        Provide this flag to ignore missing values.\n");
@@ -57,13 +52,6 @@ RunExtract::RunExtract(int argc, char *argv[]) {
   gene2 = NULL;
   th = 0;
   quiet = 0;
-
-   // Initialize the array of method names. We set it to 10 as max. We'll
-   // most likely never have this many of similarity methods available.
-   method = (char **) malloc(sizeof(char *) * 10);
-
-   // The concatenated method.
-   char * cmethod;
 
    // The value returned by getopt_long
    int c;
@@ -115,9 +103,6 @@ RunExtract::RunExtract(int argc, char *argv[]) {
         break;
       case 'm':
         cmethod = optarg;
-        break;
-      case 'p':
-        th_method = optarg;
         break;
       // Common fitering options
       case 't':
@@ -172,7 +157,6 @@ RunExtract::RunExtract(int argc, char *argv[]) {
      fprintf(stderr,"Please provide the method (--method option).\n");
      exit(-1);
    }
-   parseMethods(cmethod);
 
    // make sure we have a positive integer for the rows and columns of the matrix
    if (rows < 0 || rows == 0) {
@@ -237,10 +221,6 @@ RunExtract::RunExtract(int argc, char *argv[]) {
 
    // print out some setup details
    if (!quiet) {
-     for(int i = 0; i < this->num_methods; i++) {
-       printf("  Expecting similarity methods: '%s'\n", method[i]);
-     }
-     printf("  Method for thresholding: %s\n", th_method);
      if (th > 0) {
        printf("  Using threshold of %f\n", th);
      }
@@ -248,46 +228,6 @@ RunExtract::RunExtract(int argc, char *argv[]) {
        printf("  Using coords (%d, %d)\n", x_coord, y_coord);
      }
    }
-}
-/**
- *
- */
-void RunExtract::parseMethods(char * methods_str) {
-
-  // Split the method into as many parts
-  char * tmp;
-  int i = 0;
-  tmp = strstr(methods_str, ",");
-  while (tmp) {
-    // Get the method and make sure it's valid.
-    method[i] = (char *) malloc(sizeof(char) * (tmp - methods_str + 1));
-    strncpy(method[i], methods_str, (tmp - methods_str));
-    methods_str = tmp + 1;
-    tmp = strstr(methods_str, ",");
-    i++;
-  }
-  // Get the last element of the methods_str.
-  method[i] = (char *) malloc(sizeof(char) * strlen(methods_str) + 1);
-  strcpy(method[i], methods_str);
-  i++;
-
-  this->num_methods = i;
-
-  for (i = 0; i < this->num_methods; i++) {
-    if (strcmp(method[i], "pc") != 0 &&
-        strcmp(method[i], "mi") != 0 &&
-        strcmp(method[i], "sc") != 0 ) {
-      fprintf(stderr,"Error: The method (--method option) must contain only 'pc', 'sc' or 'mi'.\n");
-      exit(-1);
-    }
-    // Make sure the method isn't specified more than once.
-    for (int j = 0; j < i; j++) {
-      if (strcmp(method[i], method[j]) == 0) {
-        fprintf(stderr,"Error: You may only specify a similarity method once (--method option).\n");
-        exit(-1);
-      }
-    }
-  }
 }
 
 
@@ -303,8 +243,8 @@ RunExtract::~RunExtract() {
  */
 void RunExtract::execute() {
 
-  SimMatrixBinary * smatrix = new SimMatrixBinary(ematrix, quiet, method,
-    num_methods, th_method, x_coord, y_coord, gene1, gene2, th);
+  SimMatrixBinary * smatrix = new SimMatrixBinary(ematrix, quiet, cmethod,
+    x_coord, y_coord, gene1, gene2, th);
 
   // If we have a threshold then we want to get the edges of the network.
   // Otherwise the user has asked to print out the similarity value for
