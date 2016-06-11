@@ -30,7 +30,8 @@ The first step in construction of the yeast global network is to construct
 the correlation matrix.  The following commands can be executed to construct
 this matrix:
 
-  ../ccm yeast-s_cerevisiae1.global.RMA.nc-no-na-nh.txt 10359 1535
+  mkdir Pearson
+  ccm yeast-s_cerevisiae1.global.RMA.nc-no-na-nh 10359 1535
 
 The number of probesets and samples in the file are passed to 'ccm'.
 
@@ -41,7 +42,7 @@ The second step is to use Random Matrix Theory (RMT) to identify an
 appropriate threshold for the global network. This is performed 
 using the 'rmm' executable:
 
-  ../rmm -i yeast-s_cerevisiae1.global.RMA.nc-no-na-nh -b 0.930000
+rmm -i yeast-s_cerevisiae1.global.RMA.nc-no-na-nh -b 0.930000
 
 To speed up execution time we will start examining the threshold at a level
 of 0.930000. Normally, you would not know where to begin looking for the
@@ -51,10 +52,9 @@ safe to start at this threshold.
 
 Step 3: Generate additional network files
 -----------------------------------------
-The threshold returned from Step 2 was 0.831100. The threshold can be found in
-the file named: yeast-s_cerevisiae1.global.RMA.nc-no-na-nh.th.txt.  
-We can now use that threshold to generate the final network file
+The threshold returned from Step 2 was 0.831100. We can now use that
+threshold to generate the final network file
 
-  perl ../parse_pearson_bin.pl -b Pearson -t 0.831100 -p probest_order.txt -o yeast-s_cerevisiae1.global
+perl parse_pearson_bin.pl -b Pearson -t 0.831100 -p probest_order.txt -o yeast-s_cerevisiae1.global
 
 
