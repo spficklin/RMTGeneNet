@@ -43,12 +43,12 @@ double RMTThreshold::findThreshold() {
   // The size of newM.
   int size;
   // File handles for the eigenvector and Chi-square output files.
-  FILE *eigenF;
+  //FILE *eigenF;
   FILE *chiF;
   // The output file name
   char chi_filename[1024];
   // The output file name
-  char eigen_filename[1024];
+  //char eigen_filename[1024];
   // The threshold currently being tested.
   float th = thresholdStart;
   // The current chi-square value for the threshold being tested.
@@ -63,11 +63,11 @@ double RMTThreshold::findThreshold() {
 
   // Open the output files and print the headers.
   sprintf(chi_filename, "%s.%s.chiVals.txt", file_prefix, cmethod);
-  sprintf(eigen_filename, "%s.%s.eigenVals.txt", file_prefix, cmethod);
+  //sprintf(eigen_filename, "%s.%s.eigenVals.txt", file_prefix, cmethod);
 
 
   chiF = fopen(chi_filename, "w");
-  eigenF = fopen(eigen_filename, "w");
+  //eigenF = fopen(eigen_filename, "w");
   fprintf(chiF, "Threshold\tChi-square\tCut Matrix Size\n");
 
   // Iterate through successively smaller threshold values until the following
@@ -87,11 +87,11 @@ double RMTThreshold::findThreshold() {
       free(newM);
 
       // print out eigenvalues to file
-      fprintf(eigenF, "%f\t", th);
-      for (int i = 0; i < size ; i++) {
-        fprintf(eigenF, "%f\t", E[i]);
-      }
-      fprintf(eigenF,"\n");
+//      fprintf(eigenF, "%f\t", th);
+//      for (int i = 0; i < size ; i++) {
+//        fprintf(eigenF, "%f\t", E[i]);
+//      }
+//      fprintf(eigenF,"\n");
 
       printf("  testing similarity of NNSD with Poisson...\n");
       chi = getNNSDChiSquare(E, size);
@@ -125,7 +125,7 @@ double RMTThreshold::findThreshold() {
     // matrix that contains only the threshold and higher
     th = th - thresholdStep;
   }
-  while(maxChi < chiSoughtValue || size == ematrix->getNumGenes());
+  while(maxChi < chiSoughtValue);
 
 
   // If finalChi is still greater than threshold, check the small scale

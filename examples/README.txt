@@ -12,9 +12,10 @@ contains the expression matrix for 1535 samples.  The columns of the
 matrix correspond to the samples and the rows correspond to the probesets
 on the array.  The expression levels in this file have already been
 normalized.  Control probes and ambiguous probes have been removed as well
-as outlier samples. In total, 10359 probesets remain in the file.  For 
-detailed instructions about the quality control steps used, please see the 
-publication:
+as outlier samples. In total, 10359 probesets were available, but to
+reduce the size of the file only values for 576 probesets are included in the 
+file. For detailed instructions about the quality control steps used, please 
+see the publication:
 
 Gibson SM, Ficklin SP, Isaacson S, Luo F, Feltus FA, et al. (2013)
 Massive-Scale Gene Co-Expression Network Construction and Robustness Testing
@@ -28,7 +29,7 @@ the correlation matrix.  The following commands can be executed to construct
 this matrix:
 
   ../rmtgnet similarity --ematrix yeast-s_cerevisiae1.global.RMA.nc-no-na.txt \
-    --rows 10360 --cols 1535 --method sc --header
+    --rows 577 --cols 1535 --method sc --header
 
 The number of probesets (--rows) and samples (--cols) in the file aree 
 provided to the program as well as the Spearman (--method) as the correlation
@@ -41,23 +42,23 @@ The second step is to use Random Matrix Theory (RMT) to identify an
 appropriate threshold for the network. 
 
   ../rmtgnet threshold --ematrix yeast-s_cerevisiae1.global.RMA.nc-no-na.txt \
-    --rows 10360 --cols 1535 --method sc --headers 
+    --rows 577 --cols 1535 --method sc --headers 
 
 
 Step 3: Generate additional network files
 -----------------------------------------
-The threshold returned from Step 2 was 0.8561. This value is reported in the
+The threshold returned from Step 2 was 0.863100. This value is reported in the
 yeast-s_cerevisiae1.global.RMA.nc-no-na.sc.th.txt file that was created
 in the previous step.  We can now use that threshold to generate the final 
 network file:
 
   ../rmtgnet extract --ematrix yeast-s_cerevisiae1.global.RMA.nc-no-na.txt \
-    --rows 10360 --cols 1535 --method sc --headers --th 0.8561
+    --rows 577 --cols 1535 --method sc --headers --th 0.863100
 
 The resulting network can now be found in the file named:
-yeast-s_cerevisiae1.global.RMA.nc-no-na.sc.th0.856100.coexpnet.edges.txt
+yeast-s_cerevisiae1.global.RMA.nc-no-na.sc.th0.863100.coexpnet.edges.txt
 
-The resulting file contains 5952 edges connecting 576 nodes (probesets).
+The resulting file contains 4786 edges connecting 511 nodes (probesets).
 
 This file can be used to visualize the network in Cytoscape 
 (http://www.cytoscape.org/).
