@@ -18,7 +18,8 @@ void RunExtract::printUsage() {
   printf("                   and Mutual Information ('mi').");
   printf("\n");
   printf("Optional expression matrix arguments:\n");
-  printf("  --omit_na        Provide this flag to ignore missing values.\n");
+  printf("  --omit_na         Provide this flag to ignore missing values. Use this option for\n");
+  printf("                    RNA-seq expression matricies where counts are zero.\n");
   printf("  --na_val|-n      A string representing the missing values in the input file\n");
   printf("                   (e.g. NA or 0.000)\n");
   printf("  --func|-f        A transformation function to apply to elements of the ematrix.\n");

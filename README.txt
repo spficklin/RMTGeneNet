@@ -1,15 +1,13 @@
 RMTGeneNet
 ==========
 
-This package provides two binaries. One that generates pearson correlations for
-gene expression data and another that employs Random Matrix Theory (RMT) to 
-determine thresholding of a gene co-expression network. A perl script can be
-used to extract the gene co-expression network using the RMT threshold from
-the correlation binary file.
-
-This package was converted from Java source code to C code to improve 
-performance.  The original Java code can be found here:
-http://bci.clemson.edu/software/rmt.
+RMTGeneNet is an open-source software package that provides tools for
+construction of gene co-expression networks.  It supports correlation methods
+of Pearson, Spearman and Mutual Information to generate a similarity matrix. It
+uses Random Matrix Theory (RMT)for identification of the threshold to cut the
+similarity matrix to form an adjacency matrix that represents the network.  A
+third step is available to extract the network from the adjacency matrix into
+a format for loading further analysis and visualization.  
 
 RMTGeneNet is offered under a GPL v2.0 license agreement.  
 
@@ -23,103 +21,47 @@ BUILD A NETWORK
 ---------------
 To construct a gene co-expression network using RMTGeneNet an expression
 matrix must first be constructed.  The expression matrix should be present in
-a tab-delimeted file where the columns represent the experimental samples and
+a tab-delimited file where the columns represent the experimental samples and
 the rows represent the measured unit. In the case of a set of microarray
 experiments the columns would represent each microarray and the rows would
-represent the probesets of the array.  The first column should contain the
-names of measured units (e.g. probesets) but there should be no column headers
-in the file.  The cells in the matrix should contain the measured expression 
-levels. The file should be named with a .txt extension.
+represent the probesets of the array.  For RNA-seq datasets the samples are
+the column names and the rows are the transcript or gene names. The cells in 
+the matrix should contain the measured expression levels. 
 
-Step 1: Calculate Pearson Corrleations
-Use the 'ccm' binary to construct pearson correlations.  The binary can be
-executed in the following way:
+The header column is optional but is recommended. If present it should
+only contain the sample names.  Thus if exporting an expression matrix from
+Excel the first column in the header typically indicates that the first column
+contains gene (or probeset) IDs (e.g. 'Gene ID').  This first column should
+be removed.  There should only be sample names in the first row, equal to the
+number of samples in the file. 
 
-   ccm <ematrix> <rows> <cols> [<omit_na> <na_val> <hist> <perf> <headers>]
+RMTGeneNet v1.0a provides three different "programs" all from the same
+executable.  These three programs are 'similarity', 'threshold' and 'extract'.
+The first, 'similarity', is used to construct the similarity matrix using
+one of three correlation methods.  The second, 'threshold', uses Random Matrix
+Theory to determine the threshold to the similarity matrix.  The third, 
+'extract' is used to generate tab-delimited files that can be used for 
+downstream analysis or for visualization.
 
-Where:
-    <ematrix>: the file name that contains the expression matrix. The rows must 
-               be genes or probesets and columns are samples.
-    <rows>:    the number of lines in the input file minus the header column if 
-               it exists.
-    <cols>:    the number of columns in the input file minus the first column 
-               that contains gene names.
-    <omit_na>: set to 1 to ignore missing values. Defaults to 0.
-    <na_val>:  a string representing the missing values in the input file 
-               (e.g. NA or 0.000).
-    <min_obs>: the minimum number of observations (after missing values removed) 
-               that must be present to perform correlation. Default is 30.
-    <func>:    a transformation function to apply to elements of the ematrix. 
-               Values include: log2 or none. Default is none.
-    <hist>:    set to 1 to enable creation of correlation historgram. Defaults 
-               to 0.
-    <perf>:    set to 1 to enable performance monitoring. Defaults to 0.
-    <headers>: set to 1 if the first line contains headers. Defaults to 0.
-    
+Instrutions for performing each step can be obtained by executing RMTGeneNet
+with the with the --help option. For example:
 
-The 'ccm' binary will create several binary files inside of a 'Pearson'
-directory.  These binary files contain the pair-wise Pearson correlation
-values for every unit.  Correlation value is set to NaN if there weren't enough 
-observations to perform the calculation.
+  rmtgnet help
+  
+For instructions regarding similarity matrix construction:
 
+  rmtgnet similarity --help 
+  
+For instructions regarding thresholding:
 
-Step 2:  Calculate a Network Threshold
-After the Pearson correlations have been calculated, the 'rmm' employs Random
-Matrix Theory to identify a suitable threshold where the nearest neighbor
-spacing distribution of the eigenvalues.  See the following reference for
-further details:
+  rmtgnet threshold --help
+  
+For instructions regarding network extraction:
 
-Luo F, Yang Y, Zhong J, Gao H, Khan L, Thompson DK, Zhou J (2007) Constructing
-   gene co-expression networks and predicting functions of unknown genes by 
-   random matrix theory.  BMC Bioinformatics 8: 299
+  rmtgnet extract --help
 
-To find the network threshold execute the 'rmm' with the following arguments:
-
-    '-i': The input file name. Same as used in previous step.
-        Must be the same as the name used in the matrix binary
-        files.  This name will also be used to create files 
-        associated with this run of the program.
-        
-Optional:
-    
-    '-b': The initial threshold(+1*step) value that will be used.
-        [b=Begin value] Default: 0.9200
-    '-s': The threshold step size used each iteration. Default: 0.001
-    '-c': The chi-square test value that the loop will stop on.
-        Default: 200
-    '-v': Set the performance collection. Has two values possible values,
-        ON/OFF . [v=Verbose] Default: ON
-        
-Examples:
-
-    <executable> -i <input.file.name> 
-    <exec> -i <input.file.name> -s <0.0001> -v ON
-    
-Argument order is not important, but spaces are required between the flag and  
-value. If the underlying data set is highly correlated, the 'rmm' binary may
-not be able to find a threshold.
-
-Step 3: Generate the Network
-Once a threshold has been determined, the Perl script named
-'parse_pearson_bin.pl' and be used to generate the network file.  Execute the
-script in the following way:
-
-   parse_pearson_bin.pl -b Pearson -t <threshold> -p <probesets> -o <prefix>
-
-Where
-
-   <threshold> is the numeric threshold value provided by the 'rmm' binary
-   <probestes> is a text file containing the measurable units (e.g.
-               probesets). They must appear in the same order, one unit per 
-               line, as they appear in the rows of the expression matrix.
-   <prefix>    a prefix to attach to the output network name.
-
-The '-b Pearson' argument specifies the Pearson directory created in step1
-above where the Pearson correlation binary files are located.  
-
-The 'parse_pearson_bin.pl' script has other functionality as well. For further
-details, execute the script with a '--help' argument.
-
-
-
-
+EXAMPLE
+-------
+This package contains an example yeast dataset for testing of this software. 
+Please see the README.txt in the examples directory for more information and
+command-line examples for creating the example yeast network.

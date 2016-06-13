@@ -8,11 +8,11 @@ void print_usage() {
   printf("\n");
   printf("Usage: ./rmtgnet [command]\n");
   printf("Available commands:\n");
-  printf("  similarity       Performs pair-wise similarity calculations using an input expression matrix.\n");
-  printf("  threshold        Identifies a threshold for cutting the similarity matrix\n");
-  printf("  extract          Outputs the network edges file\n");
-  printf("  help [command]   Prints these instructions. Include the command to print help\n");
-  printf("                   for a specific command (e.g. rmtgnet help similarity)\n");
+  printf("  similarity  Performs pair-wise similarity calculations using an input expression matrix.\n");
+  printf("  threshold   Identifies a threshold for cutting the similarity matrix\n");
+  printf("  extract     Outputs the network edges file\n");
+  printf("  help        Prints these instructions. Include the command to print help\n");
+  printf("              for a specific command (e.g. rmtgnet help similarity)\n");
   printf("\n");
 }
 
