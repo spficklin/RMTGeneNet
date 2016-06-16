@@ -4,6 +4,19 @@ To Install RMTGeneNet the following dependencies must first be met:
 * LAPACK (http://www.netlib.org/lapack/)
 * BLAS (http://www.netlib.org/blas/)
 
+On an Ubuntu 14.04 system the following commands can be used to install the 
+prerequisites:
+
+GNU Scientific Library: 
+sudo apt-get install libgsl0ldbl
+sudo apt-get install gsl-bin libgsl0-dev
+
+LAPACK: 
+sudo apt-get install liblapacke-dev
+
+BLAS: 
+sudo apt-get install libblas-dev
+
 Before compiling, first edit the Makefile and change the following
 variables to suit your environment:
 
