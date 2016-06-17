@@ -123,4 +123,4 @@ clean:
 	rm -f ${OBJS} ${EXE}
 
 install: all
-	install -m 0755 kink ${EXE_DIR}
+	install -m 0755 rmtgnet ${EXE_DIR}
