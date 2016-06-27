@@ -176,8 +176,8 @@ RunThreshold::RunThreshold(int argc, char *argv[]) {
 
   // TODO: make sure the th_method is in the method array.
 
-  if (headers) {
-    printf("  Skipping header lines\n");
+  if (headers == 1) {
+    printf("  Reading header line\n");
   }
   printf("  Performing transformation: %s \n", func);
   if (omit_na) {

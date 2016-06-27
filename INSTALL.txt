@@ -27,4 +27,3 @@ variables to suit your environment:
 To compile run
 
 make
-make install

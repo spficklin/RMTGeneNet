@@ -122,5 +122,5 @@ rmtgnet.o: rmtgnet.cpp rmtgnet.h
 clean:
 	rm -f ${OBJS} ${EXE}
 
-install: all
-	install -m 0755 rmtgnet ${EXE_DIR}
+#install: all
+#	install -m 0755 rmtgnet ${EXE_DIR}

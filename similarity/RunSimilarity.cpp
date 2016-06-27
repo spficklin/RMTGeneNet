@@ -215,8 +215,8 @@ RunSimilarity::RunSimilarity(int argc, char *argv[]) {
     histogram[m] = 0;
   }
 
-  if (headers) {
-    printf("  Skipping header lines\n");
+  if (headers == 1) {
+    printf("  Reading header line\n");
   }
   printf("  Performing transformation: %s \n", func);
   if (omit_na) {
