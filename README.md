@@ -1,4 +1,4 @@
-# Deprecated
+# NOTICE: RMTGeneNet is Deprecated
 
 RMTGeneNet is deprecated. Please use [KINC](https://kinc.readthedocs.io/en/latest/) instead.
 
